@@ -16,6 +16,12 @@ import yaml
 from dotenv import load_dotenv
 from netmiko import ConnectHandler
 from netmiko.exceptions import NetmikoTimeoutException, NetmikoAuthenticationException
+from netmiko.cisco.cisco_ios import CiscoIosSSH
+
+class MockCiscoSSH(CiscoIosSSH):
+    def set_terminal_width(self, *args, **kwargs):
+        """Skip terminal width setup — mock server doesn't support it."""
+        return ""
 
 load_dotenv()
 
@@ -135,7 +141,9 @@ def gather_device_facts(device_cfg):
 
     try:
         print(f"  Connecting to {hostname} ({device_cfg['host']}:{device_cfg['port']})...")
-        with ConnectHandler(**conn_params) as conn:
+        # with ConnectHandler(**conn_params) as conn:
+        ConnClass = MockCiscoSSH if device_type == "cisco_ios" else ConnectHandler
+        with ConnClass(**conn_params) as conn:
             if device_type == "cisco_ios":
                 result["facts"] = get_cisco_facts(conn, hostname)
             elif device_type == "linux":

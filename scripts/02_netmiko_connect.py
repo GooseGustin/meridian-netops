@@ -10,7 +10,13 @@ import os
 from netmiko import ConnectHandler
 from netmiko.exceptions import NetmikoTimeoutException, NetmikoAuthenticationException
 from dotenv import load_dotenv
+from netmiko.cisco.cisco_ios import CiscoIosSSH
 
+class MockCiscoSSH(CiscoIosSSH):
+    def set_terminal_width(self, *args, **kwargs):
+        """Skip terminal width setup — mock server doesn't support it."""
+        return ""
+    
 load_dotenv()
 
 
@@ -22,7 +28,8 @@ def connect_and_gather(device_dict):
     try:
         # ConnectHandler handles: SSH negotiation, banner, prompt detection,
         # terminal length 0, and enable mode — all automatically.
-        with ConnectHandler(**device_dict) as conn:
+        # with ConnectHandler(**device_dict) as conn:
+        with MockCiscoSSH(**device_dict) as conn:
             prompt = conn.find_prompt()
             print(f"[+] Connected. Prompt: {prompt}")
 

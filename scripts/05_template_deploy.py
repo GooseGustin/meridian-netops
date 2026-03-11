@@ -14,6 +14,12 @@ from dotenv import load_dotenv
 from jinja2 import Environment, FileSystemLoader
 from netmiko import ConnectHandler
 from netmiko.exceptions import NetmikoTimeoutException, NetmikoAuthenticationException
+from netmiko.cisco.cisco_ios import CiscoIosSSH
+
+class MockCiscoSSH(CiscoIosSSH):
+    def set_terminal_width(self, *args, **kwargs):
+        """Skip terminal width setup — mock server doesn't support it."""
+        return ""
 
 load_dotenv()
 
@@ -44,7 +50,9 @@ def push_config(hostname, port, config_lines):
     }
 
     try:
-        with ConnectHandler(**conn_params) as conn:
+        # with ConnectHandler(**conn_params) as conn:
+        ConnClass = MockCiscoSSH if conn_params['device_type'] == "cisco_ios" else ConnectHandler
+        with ConnClass(**conn_params) as conn:
             print(f"  Pushing config to {hostname}...")
             output = conn.send_config_set(config_lines)
             # Verify the interface is now described correctly
