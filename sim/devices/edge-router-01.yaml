@@ -1,0 +1,118 @@
+hostname: edge-router-01
+
+credentials:
+  username: netops
+  password: "Meridian@2024"
+
+banner: |
+  *******************************************
+  * MERIDIAN FINANCIAL GROUP                *
+  * Lagos DC -- Edge Router 01              *
+  * Authorized Access Only. Activity Logged *
+  *******************************************
+
+interfaces:
+  GigabitEthernet0/0:
+    ip: "10.0.0.1"
+    method: NVRAM
+    status: up
+    protocol: up
+  GigabitEthernet0/1:
+    ip: "10.0.1.1"
+    method: NVRAM
+    status: up
+    protocol: up
+  GigabitEthernet0/2:
+    ip: "unassigned"
+    method: unset
+    status: administratively down
+    protocol: down
+
+show_version: |
+  Cisco IOS Software, Version 15.2(4)M7, RELEASE SOFTWARE (fc2)
+  Copyright (c) 1986-2014 by Cisco Systems, Inc.
+  edge-router-01 uptime is 47 days, 3 hours, 12 minutes
+  System image file is "flash:c2900-universalk9-mz.SPA.152-4.M7.bin"
+  cisco CISCO2901/K9 (revision 1.0) with 491520K/32768K bytes of memory.
+  Processor board ID FTX1524AHAF
+  2 Gigabit Ethernet interfaces
+  Configuration register is 0x2102
+
+show_ip_route: |
+  Codes: L - local, C - connected, S - static
+  Gateway of last resort is 10.0.0.254 to network 0.0.0.0
+       10.0.0.0/8 is variably subnetted, 4 subnets, 2 masks
+  C       10.0.0.0/24 is directly connected, GigabitEthernet0/0
+  L       10.0.0.1/32 is directly connected, GigabitEthernet0/0
+  C       10.0.1.0/24 is directly connected, GigabitEthernet0/1
+  L       10.0.1.1/32 is directly connected, GigabitEthernet0/1
+  S*      0.0.0.0/0 [1/0] via 10.0.0.254
+
+show_access_lists: |
+  Extended IP access list MANAGEMENT_ACCESS
+      10 permit tcp 10.50.0.0 0.0.255.255 any eq 22 (15 matches)
+      20 permit tcp 10.50.0.0 0.0.255.255 any eq 443 (42 matches)
+      30 deny ip any any log (0 matches)
+  Extended IP access list INBOUND_FILTER
+      10 permit tcp any host 10.0.10.5 eq 443
+      20 permit tcp any host 10.0.10.5 eq 80
+      30 deny ip any any log
+
+show_cdp_neighbors: |
+  Capability Codes: R - Router, T - Trans Bridge, S - Switch
+  Device ID        Local Intrfce   Holdtme  Capability  Platform  Port ID
+  fw-01            Gig 0/1         150      R S         CISCO2901 Gig 0/0
+
+show_cpu: "CPU utilization for five seconds: 12%/1%; one minute: 8%; five minutes: 7%"
+
+show_ntp: "Clock is synchronized, stratum 3, reference is 10.0.0.254"
+
+running_config: |
+  !
+  version 15.2
+  service password-encryption
+  service timestamps log datetime msec
+  !
+  hostname edge-router-01
+  !
+  enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
+  !
+  ip domain name meridian.internal
+  ip name-server 10.0.0.254
+  no ip source-route
+  !
+  interface GigabitEthernet0/0
+   description ** Uplink to ISP **
+   ip address 10.0.0.1 255.255.255.0
+   ip access-group INBOUND_FILTER in
+   no shutdown
+  !
+  interface GigabitEthernet0/1
+   description ** Link to fw-01 **
+   ip address 10.0.1.1 255.255.255.0
+   no shutdown
+  !
+  interface GigabitEthernet0/2
+   description ** UNUSED - DO NOT ENABLE **
+   shutdown
+  !
+  ip access-list extended MANAGEMENT_ACCESS
+   permit tcp 10.50.0.0 0.0.255.255 any eq 22
+   permit tcp 10.50.0.0 0.0.255.255 any eq 443
+   deny ip any any log
+  !
+  ip access-list extended INBOUND_FILTER
+   permit tcp any host 10.0.10.5 eq 443
+   permit tcp any host 10.0.10.5 eq 80
+   deny ip any any log
+  !
+  logging buffered 16384 debugging
+  logging host 10.50.0.100
+  ntp server 10.0.0.254
+  !
+  line vty 0 4
+   access-class MANAGEMENT_ACCESS in
+   login local
+   transport input ssh
+  !
+  end

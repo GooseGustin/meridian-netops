@@ -1,0 +1,97 @@
+hostname: core-sw-01
+
+credentials:
+  username: netops
+  password: "Meridian@2024"
+
+banner: |
+  *******************************************
+  * MERIDIAN FINANCIAL GROUP                *
+  * Lagos DC -- Core Switch 01              *
+  * Authorized Access Only. Activity Logged *
+  *******************************************
+
+interfaces:
+  GigabitEthernet0/1:
+    ip: "10.0.2.2"
+    method: NVRAM
+    status: up
+    protocol: up
+  GigabitEthernet0/2:
+    ip: "10.0.10.1"
+    method: NVRAM
+    status: up
+    protocol: up
+  GigabitEthernet0/3:
+    ip: "10.0.20.1"
+    method: NVRAM
+    status: up
+    protocol: up
+
+show_version: |
+  Cisco IOS Software, Version 15.2(4)M7, RELEASE SOFTWARE (fc2)
+  core-sw-01 uptime is 47 days, 2 hours, 58 minutes
+  cisco WS-C3750X-48P (revision 1.0) with 524288K bytes of memory.
+  Configuration register is 0x102F
+
+show_vlan: |
+  VLAN Name                             Status    Ports
+  ---- -------------------------------- --------- ----------------------------
+  1    default                          active
+  10   WEB_SERVERS                      active    Gi0/2
+  20   DB_SERVERS                       active    Gi0/3
+  50   MANAGEMENT                       active    Gi0/1
+  1002 fddi-default                     act/unsup
+  1003 token-ring-default               act/unsup
+
+show_cdp_neighbors: |
+  Device ID        Local Intrfce   Holdtme  Capability  Platform  Port ID
+  fw-01            Gig 0/1         165      R S         CISCO2901 Gig 0/1
+
+show_cpu: "CPU utilization for five seconds: 3%/0%; one minute: 2%; five minutes: 2%"
+
+show_ntp: "Clock is synchronized, stratum 4, reference is 10.0.1.2"
+
+running_config: |
+  !
+  version 15.2
+  service password-encryption
+  service timestamps log datetime msec
+  !
+  hostname core-sw-01
+  !
+  enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
+  !
+  vlan 10
+   name WEB_SERVERS
+  vlan 20
+   name DB_SERVERS
+  vlan 50
+   name MANAGEMENT
+  !
+  interface GigabitEthernet0/1
+   description ** Uplink to fw-01 **
+   switchport mode trunk
+   no shutdown
+  !
+  interface GigabitEthernet0/2
+   description ** web-01 **
+   switchport access vlan 10
+   switchport mode access
+   no shutdown
+  !
+  interface GigabitEthernet0/3
+   description ** db-01 **
+   switchport access vlan 20
+   switchport mode access
+   no shutdown
+  !
+  logging buffered 16384 debugging
+  logging host 10.50.0.100
+  ntp server 10.0.1.2
+  !
+  line vty 0 4
+   login local
+   transport input ssh
+  !
+  end

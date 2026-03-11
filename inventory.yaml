@@ -1,0 +1,44 @@
+# Meridian Financial Group — Device Inventory
+# This file is the Source of Truth for all automation scripts.
+# Never hardcode device details inside scripts.
+
+devices:
+  - hostname: edge-router-01
+    host: "127.0.0.1"
+    port: 2222
+    device_type: cisco_ios
+    role: edge-router
+    site: lagos-dc
+    os_family: cisco_ios
+
+  - hostname: fw-01
+    host: "127.0.0.1"
+    port: 2223
+    device_type: cisco_ios
+    role: firewall
+    site: lagos-dc
+    os_family: cisco_ios
+
+  - hostname: core-sw-01
+    host: "127.0.0.1"
+    port: 2224
+    device_type: cisco_ios
+    role: core-switch
+    site: lagos-dc
+    os_family: cisco_ios
+
+  - hostname: web-01
+    host: "127.0.0.1"
+    port: 2225
+    device_type: linux
+    role: web-server
+    site: lagos-dc
+    os_family: linux
+
+  - hostname: db-01
+    host: "127.0.0.1"
+    port: 2226
+    device_type: linux
+    role: db-server
+    site: lagos-dc
+    os_family: linux

@@ -1,0 +1,88 @@
+hostname: fw-01
+
+credentials:
+  username: netops
+  password: "Meridian@2024"
+
+banner: |
+  *******************************************
+  * MERIDIAN FINANCIAL GROUP                *
+  * Lagos DC -- Perimeter Firewall 01       *
+  * Authorized Access Only. Activity Logged *
+  *******************************************
+
+interfaces:
+  GigabitEthernet0/0:
+    ip: "10.0.1.2"
+    method: NVRAM
+    status: up
+    protocol: up
+  GigabitEthernet0/1:
+    ip: "10.0.2.1"
+    method: NVRAM
+    status: up
+    protocol: up
+
+show_version: |
+  Cisco IOS Software, Version 15.2(4)M7, RELEASE SOFTWARE (fc2)
+  fw-01 uptime is 47 days, 3 hours, 9 minutes
+  cisco CISCO2901/K9 (revision 1.0) with 491520K/32768K bytes of memory.
+  Processor board ID FTX1524BHAF
+  Configuration register is 0x2102
+
+show_access_lists: |
+  Extended IP access list OUTSIDE_IN
+      10 permit tcp any host 10.0.10.5 eq 443 (8821 matches)
+      20 permit tcp any host 10.0.10.5 eq 80 (142 matches)
+      30 deny ip any any log (4 matches)
+  Extended IP access list INSIDE_OUT
+      10 permit ip 10.0.10.0 0.0.0.255 any
+      20 permit ip 10.0.20.0 0.0.0.255 any
+      30 deny ip any any log
+
+show_cpu: "CPU utilization for five seconds: 5%/0%; one minute: 4%; five minutes: 4%"
+
+show_ntp: "Clock is synchronized, stratum 4, reference is 10.0.0.1"
+
+running_config: |
+  !
+  version 15.2
+  service password-encryption
+  service timestamps log datetime msec
+  !
+  hostname fw-01
+  !
+  enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0
+  !
+  ip domain name meridian.internal
+  !
+  interface GigabitEthernet0/0
+   description ** Uplink to edge-router-01 **
+   ip address 10.0.1.2 255.255.255.0
+   ip access-group OUTSIDE_IN in
+   no shutdown
+  !
+  interface GigabitEthernet0/1
+   description ** Link to core-sw-01 **
+   ip address 10.0.2.1 255.255.255.0
+   no shutdown
+  !
+  ip access-list extended OUTSIDE_IN
+   permit tcp any host 10.0.10.5 eq 443
+   permit tcp any host 10.0.10.5 eq 80
+   deny ip any any log
+  !
+  ip access-list extended INSIDE_OUT
+   permit ip 10.0.10.0 0.0.0.255 any
+   permit ip 10.0.20.0 0.0.0.255 any
+   deny ip any any log
+  !
+  logging buffered 16384 debugging
+  logging host 10.50.0.100
+  ntp server 10.0.0.1
+  !
+  line vty 0 4
+   login local
+   transport input ssh
+  !
+  end

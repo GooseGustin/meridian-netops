@@ -1,0 +1,15 @@
+{# templates/interface_config.j2 #}
+{# Meridian standard interface configuration template #}
+interface {{ interface_name }}
+ description ** {{ description }} **
+ ip address {{ ip_address }} {{ subnet_mask }}
+{% if vlan_id is defined %}
+ switchport access vlan {{ vlan_id }}
+ switchport mode access
+{% endif %}
+{% if shutdown %}
+ shutdown
+{% else %}
+ no shutdown
+{% endif %}
+ ip access-group {{ acl_inbound }} in

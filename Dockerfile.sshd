@@ -1,0 +1,22 @@
+FROM ubuntu
+
+RUN apt-get update && apt-get install -y \
+    openssh-server \
+    net-tools \
+    curl \
+    nmap \
+    python3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create the SSH run directory
+RUN mkdir /var/run/sshd
+
+# Set root password — for lab use only, never do this in production
+RUN echo 'root:meridian_docker' | chpasswd
+
+# Allow root login over SSH (lab only)
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+EXPOSE 22
+CMD ["/usr/sbin/sshd", "-D"]

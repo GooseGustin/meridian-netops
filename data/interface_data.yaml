@@ -1,0 +1,21 @@
+# Interface configurations for Meridian devices
+# This is the Source of Truth for interface policy
+
+interfaces:
+  - device: edge-router-01
+    port: 2222
+    interface_name: GigabitEthernet0/1
+    description: "Link to fw-01 - Segment A"
+    ip_address: "10.0.1.1"
+    subnet_mask: "255.255.255.0"
+    shutdown: false
+    acl_inbound: MANAGEMENT_ACCESS
+
+  - device: fw-01
+    port: 2223
+    interface_name: GigabitEthernet0/1
+    description: "Link to core-sw-01 - Internal Segment"
+    ip_address: "10.0.2.1"
+    subnet_mask: "255.255.255.0"
+    shutdown: false
+    acl_inbound: INSIDE_OUT

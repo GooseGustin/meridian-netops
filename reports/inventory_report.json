@@ -1,0 +1,68 @@
+[
+  {
+    "hostname": "edge-router-01",
+    "role": "edge-router",
+    "site": "lagos-dc",
+    "device_type": "cisco_ios",
+    "timestamp": "2026-03-11T12:28:50.269324",
+    "status": "error",
+    "facts": {},
+    "error": "\n\nPattern not detected: 'terminal width 511' in output.\n\nThings you might try to fix this:\n1. Adjust the regex pattern to better identify the terminating string. Note, in\nmany situations the pattern is automatically based on the network device's prompt.\n2. Increase the read_timeout to a larger value.\n\nYou can also look at the Netmiko session_log or debug log for more information.\n\n"
+  },
+  {
+    "hostname": "fw-01",
+    "role": "firewall",
+    "site": "lagos-dc",
+    "device_type": "cisco_ios",
+    "timestamp": "2026-03-11T12:29:00.404940",
+    "status": "error",
+    "facts": {},
+    "error": "\n\nPattern not detected: 'terminal width 511' in output.\n\nThings you might try to fix this:\n1. Adjust the regex pattern to better identify the terminating string. Note, in\nmany situations the pattern is automatically based on the network device's prompt.\n2. Increase the read_timeout to a larger value.\n\nYou can also look at the Netmiko session_log or debug log for more information.\n\n"
+  },
+  {
+    "hostname": "core-sw-01",
+    "role": "core-switch",
+    "site": "lagos-dc",
+    "device_type": "cisco_ios",
+    "timestamp": "2026-03-11T12:29:10.579837",
+    "status": "error",
+    "facts": {},
+    "error": "\n\nPattern not detected: 'terminal width 511' in output.\n\nThings you might try to fix this:\n1. Adjust the regex pattern to better identify the terminating string. Note, in\nmany situations the pattern is automatically based on the network device's prompt.\n2. Increase the read_timeout to a larger value.\n\nYou can also look at the Netmiko session_log or debug log for more information.\n\n"
+  },
+  {
+    "hostname": "web-01",
+    "role": "web-server",
+    "site": "lagos-dc",
+    "device_type": "linux",
+    "timestamp": "2026-03-11T12:29:20.752385",
+    "status": "success",
+    "facts": {
+      "kernel": "Linux a9d349e78ede 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux",
+      "uptime": "up 1 hour, 3 minutes",
+      "disk_used": "15G",
+      "disk_avail": "941G",
+      "disk_use_pct": "2%",
+      "mem_total_mb": "3798",
+      "mem_used_mb": "881"
+    },
+    "error": null
+  },
+  {
+    "hostname": "db-01",
+    "role": "db-server",
+    "site": "lagos-dc",
+    "device_type": "linux",
+    "timestamp": "2026-03-11T12:29:38.547807",
+    "status": "success",
+    "facts": {
+      "kernel": "Linux f0b52d168610 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux",
+      "uptime": "up 1 hour, 4 minutes",
+      "disk_used": "15G",
+      "disk_avail": "941G",
+      "disk_use_pct": "2%",
+      "mem_total_mb": "3798",
+      "mem_used_mb": "883"
+    },
+    "error": null
+  }
+]
