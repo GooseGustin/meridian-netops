@@ -1,0 +1,66 @@
+# baseline/security_policy.yaml
+# Meridian Financial Group — Network Security Baseline
+# Version: 1.0
+# Standard: PCI-DSS 4.0, Internal Security Policy v3
+#
+# This file is the SOURCE OF TRUTH for all network compliance checks.
+# Every change MUST go through Git review before taking effect.
+
+metadata:
+  policy_version: "1.0"
+  last_reviewed: "2024-03-15"
+  owner: "Network Security Team"
+  standard: "PCI-DSS 4.0"
+
+# Lines that MUST be present in every Cisco device's running-config
+required_config_lines:
+  - "service password-encryption"
+  - "service timestamps log datetime msec"
+  - "no ip source-route"
+  - "ip ssh version 2"
+  - "logging buffered 16384"
+  - "transport input ssh"
+
+# Lines that MUST NOT appear in any device's running-config
+forbidden_config_lines:
+  - "transport input telnet"
+  - "transport input all"
+  - "no service password-encryption"
+  - "ip ssh version 1"
+  - "snmp-server community public RO"
+  - "snmp-server community private RW"
+
+# ACL rules that MUST exist on every device
+required_acl_entries:
+  - acl_name: MANAGEMENT_ACCESS
+    entries:
+      - "permit tcp 10.50.0.0 0.0.255.255 any eq 22"
+      - "deny ip any any log"
+
+# ACL entries that MUST NOT exist
+forbidden_acl_entries:
+  - "permit ip any any"
+  - "permit tcp any any"
+
+# Interface security requirements
+interface_requirements:
+  unused_port_state: "administratively down"  # All unused ports must be shut
+  description_required: true                  # All interfaces need descriptions
+
+# Service checks (checked via show commands)
+service_checks:
+  ntp_required: true
+  ntp_stratum_max: 5          # Clock must be synchronized to a stratum ≤ 5
+  logging_host_required: true  # Must log to a remote syslog server
+  cdp_allowed: true            # CDP is permitted (used internally)
+
+# Thresholds for alerting
+thresholds:
+  cpu_5sec_max_pct: 80         # Alert if CPU > 80% over 5 seconds
+  acl_permit_any_any: false    # Never permit ip any any
+
+# Remediation behaviour
+remediation:
+  auto_remediate_forbidden: true   # Auto-remove forbidden lines
+  auto_remediate_required: true    # Auto-add missing required lines
+  require_approval_for: ["acl_changes", "interface_changes"]
