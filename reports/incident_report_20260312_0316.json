@@ -1,0 +1,30 @@
+{
+  "incident_id": "MFG-IR-202603120316",
+  "timestamp": "2026-03-12T03:16:09.363473",
+  "status": "OPEN",
+  "summary": {
+    "attacker_ips": [
+      "185.220.101.47"
+    ],
+    "compromised_accounts": [
+      "oracle"
+    ],
+    "compromised_hosts": [
+      "web-01"
+    ],
+    "ips_blocked": []
+  },
+  "timeline": [
+    "Brute-force SSH attack detected on web-01",
+    "Attacker successfully authenticated as 'oracle'",
+    "Outbound C2 beacon blocked by UFW",
+    "0 attacker IP(s) blocked on perimeter firewall"
+  ],
+  "recommended_actions": [
+    "Disable account 'oracle' on web-01 immediately",
+    "Review all outbound connections from web-01 for the past 24 hours",
+    "Rotate SSH keys for all service accounts",
+    "Enable fail2ban on all Linux hosts",
+    "Implement SSH key-only auth (disable password auth)"
+  ]
+}

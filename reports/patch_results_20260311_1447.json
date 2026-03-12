@@ -1,0 +1,42 @@
+[
+  {
+    "hostname": "web-01",
+    "timestamp": "2026-03-11T14:45:23.633540",
+    "status": "success",
+    "pre_checks": {
+      "kernel_before": "6.6.87.2-microsoft-standard-WSL2",
+      "uptime_before": "13:45:24 up  3:14,  0 user,  load average: 0.00, 0.04, 0.12",
+      "upgradable_packages_preview": "Listing..."
+    },
+    "patch_output": {
+      "update_output": "\nGet:16 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [2285 kB]\nGet:17 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [49.5 kB]\nGet:18 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [34.6 kB]\nFetched 36.6 MB in 16s (2331 kB/s)\nReading package lists...",
+      "upgrade_output": "\nSetting up libstdc++6:amd64 (14.2.0-4ubuntu2~24.04.1) ...\n(Reading database ... \n(Reading database ... 5%\n(Reading database ... 10%\n(Reading database ... 15%\n(Reading database ... 20%\n(Reading database ... 25%\n(Reading database ... 30%\n(Reading database ... 35%\n(Reading database ... 40%\n(Reading database ... 45%\n(Reading database ... 50%\n(Reading database ... 55%\n(Reading database ... 60%\n(Reading database ... 65%\n(Reading database ... 70%\n(Reading database ... 75%\n(Reading database ... 80%\n(Reading database ... 85%\n(Reading database ... 90%\n(Reading database ... 95%\n(Reading database ... 100%\n(Reading database ... 12689 files and directories currently installed.)\nPreparing to unpack .../libgcc-s1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...\nUnpacking libgcc-s1:amd64 (14.2.0-4ubuntu2~24.04.1) over (14.2.0-4ubuntu2~24.04) ...\nSetting up libgcc-s1:amd64 (14.2.0-4ubuntu2~24.04.1) ...\n(Reading database ... \n(Reading database ... 5%\n(Reading database ... 10%\n(Reading database ... 15%\n(Reading database ... 20%\n(Reading database ... 25%\n(Reading database ... 30%\n(Reading database ... 35%\n(Reading database ... 40%\n(Reading database ... 45%\n(Reading database ... 50%\n(Reading database ... 55%\n(Reading database ... 60%\n(Reading database ... 65%\n(Reading database ... 70%\n(Reading database ... 75%\n(Reading database ... 80%\n(Reading database ... 85%\n(Reading database ... 90%\n(Reading database ... 95%\n(Reading database ... 100%\n(Reading database ... 12689 files and directories currently installed.)\nPreparing to unpack .../libgnutls30t64_3.8.3-1.1ubuntu3.5_amd64.deb ...\nUnpacking libgnutls30t64:amd64 (3.8.3-1.1ubuntu3.5) over (3.8.3-1.1ubuntu3.4) ...\nSetting up libgnutls30t64:amd64 (3.8.3-1.1ubuntu3.5) ...\nProcessing triggers for libc-bin (2.39-0ubuntu8.7) ..."
+    },
+    "post_checks": {
+      "kernel_after": "6.6.87.2-microsoft-standard-WSL2",
+      "kernel_changed": false,
+      "reboot_required": false
+    },
+    "error": null
+  },
+  {
+    "hostname": "db-01",
+    "timestamp": "2026-03-11T14:45:59.575372",
+    "status": "success",
+    "pre_checks": {
+      "kernel_before": "6.6.87.2-microsoft-standard-WSL2",
+      "uptime_before": "13:46:00 up  3:14,  0 user,  load average: 0.00, 0.03, 0.11",
+      "upgradable_packages_preview": "Listing..."
+    },
+    "patch_output": {
+      "update_output": "\nGet:16 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2025 kB]\nGet:17 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [34.6 kB]\nGet:18 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [49.5 kB]\nFetched 36.6 MB in 28s (1292 kB/s)\nReading package lists...",
+      "upgrade_output": "\nSetting up libstdc++6:amd64 (14.2.0-4ubuntu2~24.04.1) ...\n(Reading database ... \n(Reading database ... 5%\n(Reading database ... 10%\n(Reading database ... 15%\n(Reading database ... 20%\n(Reading database ... 25%\n(Reading database ... 30%\n(Reading database ... 35%\n(Reading database ... 40%\n(Reading database ... 45%\n(Reading database ... 50%\n(Reading database ... 55%\n(Reading database ... 60%\n(Reading database ... 65%\n(Reading database ... 70%\n(Reading database ... 75%\n(Reading database ... 80%\n(Reading database ... 85%\n(Reading database ... 90%\n(Reading database ... 95%\n(Reading database ... 100%\n(Reading database ... 12689 files and directories currently installed.)\nPreparing to unpack .../libgcc-s1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...\nUnpacking libgcc-s1:amd64 (14.2.0-4ubuntu2~24.04.1) over (14.2.0-4ubuntu2~24.04) ...\nSetting up libgcc-s1:amd64 (14.2.0-4ubuntu2~24.04.1) ...\n(Reading database ... \n(Reading database ... 5%\n(Reading database ... 10%\n(Reading database ... 15%\n(Reading database ... 20%\n(Reading database ... 25%\n(Reading database ... 30%\n(Reading database ... 35%\n(Reading database ... 40%\n(Reading database ... 45%\n(Reading database ... 50%\n(Reading database ... 55%\n(Reading database ... 60%\n(Reading database ... 65%\n(Reading database ... 70%\n(Reading database ... 75%\n(Reading database ... 80%\n(Reading database ... 85%\n(Reading database ... 90%\n(Reading database ... 95%\n(Reading database ... 100%\n(Reading database ... 12689 files and directories currently installed.)\nPreparing to unpack .../libgnutls30t64_3.8.3-1.1ubuntu3.5_amd64.deb ...\nUnpacking libgnutls30t64:amd64 (3.8.3-1.1ubuntu3.5) over (3.8.3-1.1ubuntu3.4) ...\nSetting up libgnutls30t64:amd64 (3.8.3-1.1ubuntu3.5) ...\nProcessing triggers for libc-bin (2.39-0ubuntu8.7) ..."
+    },
+    "post_checks": {
+      "kernel_after": "6.6.87.2-microsoft-standard-WSL2",
+      "kernel_changed": false,
+      "reboot_required": false
+    },
+    "error": null
+  }
+]

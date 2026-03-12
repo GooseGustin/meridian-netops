@@ -1,0 +1,151 @@
+{
+  "scan_time": "2026-03-11T13:52:22.471731",
+  "real_scan_results": [
+    {
+      "ip": "127.0.0.1",
+      "hostname": "web-01",
+      "open_ports": [
+        {
+          "port": 2225,
+          "protocol": "tcp",
+          "service": "ssh",
+          "version": "9.6p1 Ubuntu 3ubuntu13.14",
+          "state": "open"
+        }
+      ]
+    },
+    {
+      "ip": "127.0.0.1",
+      "hostname": "db-01",
+      "open_ports": [
+        {
+          "port": 2226,
+          "protocol": "tcp",
+          "service": "ssh",
+          "version": "9.6p1 Ubuntu 3ubuntu13.14",
+          "state": "open"
+        }
+      ]
+    }
+  ],
+  "simulated_network": [
+    {
+      "hostname": "edge-router-01",
+      "ip": "10.0.0.1",
+      "open_ports": [
+        {
+          "port": 22,
+          "service": "ssh",
+          "version": "OpenSSH 7.4",
+          "state": "open"
+        },
+        {
+          "port": 443,
+          "service": "https",
+          "version": "Cisco HTTPS",
+          "state": "open"
+        }
+      ],
+      "os_guess": "Cisco IOS 15.x"
+    },
+    {
+      "hostname": "fw-01",
+      "ip": "10.0.1.1",
+      "open_ports": [
+        {
+          "port": 22,
+          "service": "ssh",
+          "version": "OpenSSH 7.4",
+          "state": "open"
+        },
+        {
+          "port": 23,
+          "service": "telnet",
+          "version": "",
+          "state": "open"
+        }
+      ],
+      "os_guess": "Cisco IOS 15.x"
+    },
+    {
+      "hostname": "web-01",
+      "ip": "10.0.10.5",
+      "open_ports": [
+        {
+          "port": 22,
+          "service": "ssh",
+          "version": "OpenSSH 8.9p1",
+          "state": "open"
+        },
+        {
+          "port": 80,
+          "service": "http",
+          "version": "Apache 2.4.52",
+          "state": "open"
+        },
+        {
+          "port": 443,
+          "service": "https",
+          "version": "Apache 2.4.52",
+          "state": "open"
+        }
+      ],
+      "os_guess": "Ubuntu 22.04"
+    },
+    {
+      "hostname": "db-01",
+      "ip": "10.0.20.5",
+      "open_ports": [
+        {
+          "port": 22,
+          "service": "ssh",
+          "version": "OpenSSH 8.9p1",
+          "state": "open"
+        },
+        {
+          "port": 5432,
+          "service": "postgresql",
+          "version": "PostgreSQL 14",
+          "state": "open"
+        },
+        {
+          "port": 3306,
+          "service": "mysql",
+          "version": "MySQL 8.0",
+          "state": "open"
+        }
+      ],
+      "os_guess": "Ubuntu 22.04"
+    }
+  ],
+  "security_issues": [
+    {
+      "hostname": "fw-01",
+      "ip": "10.0.1.1",
+      "issue": "Insecure service open: Telnet on port 23",
+      "severity": "HIGH",
+      "recommendation": "Disable Telnet and migrate to encrypted alternative."
+    },
+    {
+      "hostname": "web-01",
+      "ip": "10.0.10.5",
+      "issue": "Insecure service open: HTTP (unencrypted) on port 80",
+      "severity": "HIGH",
+      "recommendation": "Disable HTTP (unencrypted) and migrate to encrypted alternative."
+    },
+    {
+      "hostname": "db-01",
+      "ip": "10.0.20.5",
+      "issue": "Database port 5432 (postgresql) exposed",
+      "severity": "MEDIUM",
+      "recommendation": "Restrict database ports to application servers only via ACL."
+    },
+    {
+      "hostname": "db-01",
+      "ip": "10.0.20.5",
+      "issue": "Database port 3306 (mysql) exposed",
+      "severity": "MEDIUM",
+      "recommendation": "Restrict database ports to application servers only via ACL."
+    }
+  ]
+}

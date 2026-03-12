@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.94SVN scan initiated Wed Mar 11 13:52:22 2026 as: nmap -sV -p 2226 -&#45;open -oX reports/nmap_db-01.xml 127.0.0.1 -->
+<nmaprun scanner="nmap" args="nmap -sV -p 2226 -&#45;open -oX reports/nmap_db-01.xml 127.0.0.1" start="1773233542" startstr="Wed Mar 11 13:52:22 2026" version="7.94SVN" xmloutputversion="1.05">
+<scaninfo type="connect" protocol="tcp" numservices="1" services="2226"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<hosthint><status state="up" reason="unknown-response" reason_ttl="0"/>
+<address addr="127.0.0.1" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<host starttime="1773233542" endtime="1773233542"><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="127.0.0.1" addrtype="ipv4"/>
+<hostnames>
+<hostname name="localhost" type="PTR"/>
+</hostnames>
+<ports><port protocol="tcp" portid="2226"><state state="open" reason="syn-ack" reason_ttl="0"/><service name="ssh" product="OpenSSH" version="9.6p1 Ubuntu 3ubuntu13.14" extrainfo="Ubuntu Linux; protocol 2.0" ostype="Linux" method="probed" conf="10"><cpe>cpe:/a:openbsd:openssh:9.6p1</cpe><cpe>cpe:/o:linux:linux_kernel</cpe></service></port>
+</ports>
+<times srtt="266" rttvar="3852" to="100000"/>
+</host>
+<runstats><finished time="1773233542" timestr="Wed Mar 11 13:52:22 2026" summary="Nmap done at Wed Mar 11 13:52:22 2026; 1 IP address (1 host up) scanned in 0.21 seconds" elapsed="0.21" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>

@@ -1,0 +1,20 @@
+[
+  {
+    "hostname": "web-01",
+    "timestamp": "2026-03-11T14:44:15.673120",
+    "status": "error",
+    "pre_checks": {},
+    "patch_output": {},
+    "post_checks": {},
+    "error": "BaseConnection.__init__() got an unexpected keyword argument 'hostname'"
+  },
+  {
+    "hostname": "db-01",
+    "timestamp": "2026-03-11T14:44:15.677332",
+    "status": "error",
+    "pre_checks": {},
+    "patch_output": {},
+    "post_checks": {},
+    "error": "BaseConnection.__init__() got an unexpected keyword argument 'hostname'"
+  }
+]

@@ -21,6 +21,8 @@ class MockCiscoSSH(CiscoIosSSH):
     def set_terminal_width(self, *args, **kwargs):
         """Skip terminal width setup — mock server doesn't support it."""
         return ""
+    def set_terminal_length(self, *args, **kwargs):
+        return ""   # Similarly skip terminal length handshake
 
 load_dotenv()
 

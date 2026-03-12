@@ -1,0 +1,59 @@
+{
+  "scan_date": "2026-03-11T14:18:37.019010",
+  "total_findings": 7,
+  "actionable_findings": 4,
+  "tasks": [
+    {
+      "task_id": "MFG-1001",
+      "status": "New",
+      "priority": "Critical",
+      "assigned_to": "Network Ops Team",
+      "affected_host": "fw-01",
+      "affected_ip": "10.0.1.1",
+      "cve_or_plugin": "10940",
+      "vulnerability": "Telnet Service Running",
+      "cvss": 9.1,
+      "solution": "Disable Telnet on all VTY lines: 'transport input ssh'",
+      "created": "2026-03-11T14:18:37.018162"
+    },
+    {
+      "task_id": "MFG-1002",
+      "status": "New",
+      "priority": "High",
+      "assigned_to": "Linux Admin Team",
+      "affected_host": "db-01",
+      "affected_ip": "10.0.20.5",
+      "cve_or_plugin": "97862",
+      "vulnerability": "Linux Kernel Remote Code Execution (CVE-2022-1015)",
+      "cvss": 8.8,
+      "solution": "Upgrade kernel: sudo apt-get update && sudo apt-get upgrade linux-image-generic",
+      "created": "2026-03-11T14:18:37.018286"
+    },
+    {
+      "task_id": "MFG-1003",
+      "status": "New",
+      "priority": "High",
+      "assigned_to": "Linux Admin Team",
+      "affected_host": "web-01",
+      "affected_ip": "10.0.10.5",
+      "cve_or_plugin": "97861",
+      "vulnerability": "Linux Kernel Privilege Escalation (CVE-2022-0847)",
+      "cvss": 7.8,
+      "solution": "Upgrade kernel to 5.16.11, 5.15.25, or 5.10.102.",
+      "created": "2026-03-11T14:18:37.018304"
+    },
+    {
+      "task_id": "MFG-1004",
+      "status": "New",
+      "priority": "High",
+      "assigned_to": "Network Ops Team",
+      "affected_host": "fw-01",
+      "affected_ip": "10.0.1.1",
+      "cve_or_plugin": "10881",
+      "vulnerability": "SSH Protocol Version 1 Session Key Retrieval",
+      "cvss": 7.5,
+      "solution": "Disable SSH v1 and enforce SSH v2 only: 'ip ssh version 2'",
+      "created": "2026-03-11T14:18:37.018307"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "analysis_time": "2026-03-11T20:23:21.402385",
+  "log_file": "logs/auth.log",
+  "alerts": [
+    {
+      "type": "BRUTE_FORCE",
+      "severity": "HIGH",
+      "attacker_ip": "185.220.101.47",
+      "attempt_count": 87,
+      "targeted_users": [
+        "postgres",
+        "ubuntu",
+        "root",
+        "admin",
+        "oracle",
+        "netops"
+      ],
+      "first_seen": "Mar 15 02:00:00",
+      "last_seen": "Mar 15 02:00:28",
+      "affected_host": "web-01"
+    },
+    {
+      "type": "LIKELY_COMPROMISE",
+      "severity": "CRITICAL",
+      "attacker_ip": "185.220.101.47",
+      "compromised_user": "oracle",
+      "compromised_host": "web-01",
+      "login_time": "Mar 15 02:00:35",
+      "message": "IP 185.220.101.47 failed 87 times then successfully logged in as 'oracle' on web-01."
+    },
+    {
+      "type": "C2_BEACON",
+      "severity": "CRITICAL",
+      "src_ip": "10.0.10.5",
+      "dst_ip": "185.156.73.42",
+      "dst_port": 4444,
+      "host": "web-01",
+      "timestamp": "Mar 15 02:01:30",
+      "message": "Internal host 10.0.10.5 (web-01) attempted outbound connection to 185.156.73.42:4444 \u2014 known C2 port."
+    }
+  ],
+  "raw_stats": {
+    "unique_attacker_ips": 1,
+    "total_failed_attempts": 87,
+    "successful_logins": 31,
+    "outbound_blocks": 1
+  }
+}
