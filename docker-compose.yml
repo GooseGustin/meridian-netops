@@ -1,0 +1,64 @@
+# docker-compose.yml
+# Meridian Financial Group — Linux Infrastructure Lab
+# Usage: docker compose up -d
+#        docker compose down
+
+# version: "3.8" # the attribute `version` is obsolete; it will be ignored
+
+services:
+  web-01:
+    build:
+      context: .
+      dockerfile: Dockerfile.sshd
+    container_name: web-01
+    hostname: web-01
+    ports:
+      - "2225:22"
+    environment:
+      - HOSTNAME=web-01
+    networks:
+      meridian-internal:
+        ipv4_address: 172.20.10.5
+    restart: unless-stopped
+
+  db-01:
+    build:
+      context: .
+      dockerfile: Dockerfile.sshd
+    container_name: db-01
+    hostname: db-01
+    ports:
+      - "2226:22"
+    environment:
+      - HOSTNAME=db-01
+    networks:
+      meridian-internal:
+        ipv4_address: 172.20.20.5
+    restart: unless-stopped
+
+  log-collector:
+    image: ubuntu  # :22.04
+    container_name: log-collector
+    hostname: log-collector
+    ports:
+      - "5514:514/udp"   # Syslog receiver
+    command: >
+      bash -c "apt-get update -q && apt-get install -y -q rsyslog &&
+               rsyslogd -n -f /dev/stdin <<< '*.* /var/log/meridian-syslog.log' &
+               tail -f /var/log/meridian-syslog.log 2>/dev/null || sleep infinity"
+    networks:
+      meridian-internal:
+        ipv4_address: 172.20.50.100
+    volumes:
+      - syslog-data:/var/log
+    restart: unless-stopped
+
+volumes:
+  syslog-data:
+
+networks:
+  meridian-internal:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

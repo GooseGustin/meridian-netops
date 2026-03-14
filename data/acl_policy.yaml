@@ -1,0 +1,61 @@
+# data/acl_policy.yaml
+# Meridian Financial Group — ACL Policy Definitions
+# Vendor-neutral. Compiled to IOS syntax by the template.
+
+access_lists:
+  - name: MANAGEMENT_ACCESS
+    description: "Controls SSH access to all Cisco devices"
+    type: extended
+    direction: in
+    apply_to:
+      - device: "all-cisco"
+        interface: "line vty 0 4"
+    rules:
+      - seq: 10
+        action: permit
+        protocol: tcp
+        source: "10.50.0.0 0.0.255.255"
+        destination: any
+        port: eq 22
+        comment: "Allow management subnet SSH"
+      - seq: 20
+        action: permit
+        protocol: tcp
+        source: "10.50.0.0 0.0.255.255"
+        destination: any
+        port: eq 443
+        comment: "Allow management subnet HTTPS"
+      - seq: 100
+        action: deny
+        protocol: ip
+        source: any
+        destination: any
+        log: true
+        comment: "Implicit deny — log for visibility"
+
+  - name: BLOCK_THREATS
+    description: "Dynamic threat blocking list — populated by incident response"
+    type: extended
+    direction: in
+    blacklist: true   # Permit-any at end is intentional — this is a deny-list, not a whitelist
+    rules:
+      - seq: 10
+        action: deny
+        protocol: ip
+        source: "host 185.220.101.47"
+        destination: any
+        log: true
+        comment: "Brute-force attacker — blocked 2024-03-15"
+      - seq: 20
+        action: deny
+        protocol: ip
+        source: "host 185.156.73.42"
+        destination: any
+        log: true
+        comment: "Known C2 server — blocked 2024-03-15"
+      - seq: 999
+        action: permit
+        protocol: ip
+        source: any
+        destination: any
+        comment: "Permit all — threat list is a blacklist, not whitelist"

@@ -1,0 +1,22 @@
+{# templates/cisco_acl.j2 #}
+{# Generates Cisco IOS extended ACL configuration from policy YAML #}
+{#
+   Context variables:
+     acl        — single ACL dict from acl_policy.yaml
+     timestamp  — generation timestamp
+#}
+!
+! ACL: {{ acl.name }}
+! Description: {{ acl.description }}
+! Generated: {{ timestamp }}
+!
+ip access-list extended {{ acl.name }}
+{% for rule in acl.rules %}
+ {% if rule.comment is defined %}
+ ! {{ rule.comment }}
+ {% endif %}
+ {{ rule.seq }} {{ rule.action }} {{ rule.protocol }} {{ rule.source }} {{ rule.destination }}
+ {%- if rule.port is defined %} {{ rule.port }}{% endif %}
+ {%- if rule.log is defined and rule.log %} log{% endif %}
+
+{% endfor %}

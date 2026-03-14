@@ -38,7 +38,7 @@ def connect_and_gather(device_dict):
             results = {}
 
             # commands = ["show version", "show ip interface brief", "show ip route"]
-            commands = ["uname -a", "df -h", "free -m"]
+            commands = ["uname -a", "df -h", "free -m"] # , 'show running config']
             for cmd in commands:
                 output = conn.send_command(cmd)
                 results[cmd] = output
@@ -66,7 +66,7 @@ def main():
     edge_router = {
         "device_type": "linux",
         "host": "127.0.0.1",
-        "port": 2225,
+        "port": 2223,
         "username": os.getenv("DOCKER_USERNAME"),
         "password": os.getenv("DOCKER_PASSWORD"),
         "fast_cli": False,  # Disable fast_cli for better compatibility
