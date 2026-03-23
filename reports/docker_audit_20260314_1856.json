@@ -1,0 +1,58 @@
+[
+  {
+    "container": "web-01",
+    "timestamp": "2026-03-14T18:56:18.425046",
+    "open_ports": "ERROR: bash: line 1: ss: command not found",
+    "running_services": "[ + ]  ssh",
+    "user_accounts": "root:x:0:0:root:/root:/bin/bash\nubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash",
+    "ssh_password_auth": "#PasswordAuthentication yes\n# PasswordAuthentication.  Depending on your PAM configuration,\n# PAM authentication, then enable this but set PasswordAuthentication",
+    "ssh_root_login": "PermitRootLogin yes\n# the setting of \"PermitRootLogin yes\".",
+    "kernel_version": "6.6.87.2-microsoft-standard-WSL2",
+    "last_logins": "wtmp begins Sun Mar  1 11:29:03 2026",
+    "cron_jobs": "no crontab",
+    "world_writable": "",
+    "security_findings": [
+      {
+        "check": "ssh_password_auth",
+        "severity": "HIGH",
+        "message": "Password authentication is ENABLED \u2014 should be key-only",
+        "evidence": "#PasswordAuthentication yes\n# PasswordAuthentication.  Depending on your PAM configuration,\n# PAM au"
+      },
+      {
+        "check": "ssh_root_login",
+        "severity": "MEDIUM",
+        "message": "Root SSH login is ENABLED \u2014 should be disabled",
+        "evidence": "PermitRootLogin yes\n# the setting of \"PermitRootLogin yes\"."
+      }
+    ],
+    "finding_count": 2
+  },
+  {
+    "container": "db-01",
+    "timestamp": "2026-03-14T18:56:21.365190",
+    "open_ports": "ERROR: bash: line 1: ss: command not found",
+    "running_services": "[ + ]  ssh",
+    "user_accounts": "root:x:0:0:root:/root:/bin/bash\nubuntu:x:1000:1000:Ubuntu:/home/ubuntu:/bin/bash",
+    "ssh_password_auth": "#PasswordAuthentication yes\n# PasswordAuthentication.  Depending on your PAM configuration,\n# PAM authentication, then enable this but set PasswordAuthentication",
+    "ssh_root_login": "PermitRootLogin yes\n# the setting of \"PermitRootLogin yes\".",
+    "kernel_version": "6.6.87.2-microsoft-standard-WSL2",
+    "last_logins": "wtmp begins Sun Mar  1 11:29:03 2026",
+    "cron_jobs": "no crontab",
+    "world_writable": "",
+    "security_findings": [
+      {
+        "check": "ssh_password_auth",
+        "severity": "HIGH",
+        "message": "Password authentication is ENABLED \u2014 should be key-only",
+        "evidence": "#PasswordAuthentication yes\n# PasswordAuthentication.  Depending on your PAM configuration,\n# PAM au"
+      },
+      {
+        "check": "ssh_root_login",
+        "severity": "MEDIUM",
+        "message": "Root SSH login is ENABLED \u2014 should be disabled",
+        "evidence": "PermitRootLogin yes\n# the setting of \"PermitRootLogin yes\"."
+      }
+    ],
+    "finding_count": 2
+  }
+]

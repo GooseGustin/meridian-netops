@@ -1,0 +1,48 @@
+[
+  {
+    "hostname": "edge-router-01",
+    "timestamp": "2026-03-14T00:20:03.855230",
+    "status": "DRIFT_DETECTED",
+    "drift_detected": true,
+    "security_drift": [
+      "+enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0",
+      "-ip ssh version 2"
+    ],
+    "cosmetic_drift": [
+      "-! MERIDIAN FINANCIAL GROUP \u2014 Golden Config for edge-router-01",
+      "-! Generated: 2024-03-15",
+      "-! Policy version: 1.0"
+    ],
+    "policy_violations": [],
+    "missing_requirements": [
+      {
+        "type": "MISSING_REQUIRED",
+        "line": "ip ssh version 2",
+        "severity": "HIGH"
+      }
+    ],
+    "error": null
+  },
+  {
+    "hostname": "fw-01",
+    "timestamp": "2026-03-14T00:20:04.243485",
+    "status": "connection_failed",
+    "drift_detected": false,
+    "security_drift": [],
+    "cosmetic_drift": [],
+    "policy_violations": [],
+    "missing_requirements": [],
+    "error": "TCP connection to device failed.\n\nCommon causes of this problem are:\n1. Incorrect hostname or IP address.\n2. Wrong TCP port.\n3. Intermediate firewall blocking access.\n\nDevice settings: cisco_ios 127.0.0.1:2223\n\n"
+  },
+  {
+    "hostname": "core-sw-01",
+    "timestamp": "2026-03-14T00:20:04.246676",
+    "status": "connection_failed",
+    "drift_detected": false,
+    "security_drift": [],
+    "cosmetic_drift": [],
+    "policy_violations": [],
+    "missing_requirements": [],
+    "error": "TCP connection to device failed.\n\nCommon causes of this problem are:\n1. Incorrect hostname or IP address.\n2. Wrong TCP port.\n3. Intermediate firewall blocking access.\n\nDevice settings: cisco_ios 127.0.0.1:2224\n\n"
+  }
+]

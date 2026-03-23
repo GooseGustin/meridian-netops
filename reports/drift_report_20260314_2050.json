@@ -1,0 +1,74 @@
+[
+  {
+    "hostname": "edge-router-01",
+    "timestamp": "2026-03-14T20:50:40.857440",
+    "status": "DRIFT_DETECTED",
+    "drift_detected": true,
+    "security_drift": [
+      "+enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0",
+      "-ip ssh version 2"
+    ],
+    "cosmetic_drift": [
+      "-! MERIDIAN FINANCIAL GROUP \u2014 Golden Config for edge-router-01",
+      "-! Generated: 2024-03-15",
+      "-! Policy version: 1.0"
+    ],
+    "policy_violations": [],
+    "missing_requirements": [
+      {
+        "type": "MISSING_REQUIRED",
+        "line": "ip ssh version 2",
+        "severity": "HIGH"
+      }
+    ],
+    "error": null
+  },
+  {
+    "hostname": "fw-01",
+    "timestamp": "2026-03-14T20:50:41.408492",
+    "status": "DRIFT_DETECTED",
+    "drift_detected": true,
+    "security_drift": [
+      "+enable secret 5 $1$mERr$hx5rVt7rPNoS4wqbXKX7m0",
+      "-ip ssh version 2",
+      "- transport input ssh",
+      "+#  transport input ssh",
+      "+ transport input telnet"
+    ],
+    "cosmetic_drift": [
+      "-! MERIDIAN FINANCIAL GROUP \u2014 Golden Config for fw-01",
+      "-! Generated: 2024-03-15 (post-incident remediation)"
+    ],
+    "policy_violations": [
+      {
+        "type": "FORBIDDEN",
+        "line": "transport input telnet",
+        "severity": "HIGH"
+      }
+    ],
+    "missing_requirements": [
+      {
+        "type": "MISSING_REQUIRED",
+        "line": "no ip source-route",
+        "severity": "HIGH"
+      },
+      {
+        "type": "MISSING_REQUIRED",
+        "line": "ip ssh version 2",
+        "severity": "HIGH"
+      }
+    ],
+    "error": null
+  },
+  {
+    "hostname": "core-sw-01",
+    "timestamp": "2026-03-14T20:50:41.931588",
+    "status": "no_baseline",
+    "drift_detected": false,
+    "security_drift": [],
+    "cosmetic_drift": [],
+    "policy_violations": [],
+    "missing_requirements": [],
+    "error": null
+  }
+]

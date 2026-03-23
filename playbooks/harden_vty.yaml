@@ -1,0 +1,65 @@
+---
+- name: Harden VTY lines - Remove telnet, enforce SSH only
+  hosts: routers
+  gather_facts: false
+
+  tasks:
+    - name: Get current VTY configuration
+      cisco.ios.ios_command:
+        commands:
+          - show running-config | begin line vty
+      register: vty_check
+
+    - name: Check if telnet is configured on any VTY line
+      set_fact:
+        has_telnet: "{{ 'transport input telnet' in vty_check.stdout[0] }}"
+        current_vty_config: "{{ vty_check.stdout[0] }}"
+
+    - name: Show detection results
+      ansible.builtin.debug:
+        msg:
+          - "Host: {{ inventory_hostname }}"
+          - "Telnet detected: {{ has_telnet }}"
+          - "Current VTY config snippet:"
+          - "{{ current_vty_config.split('\n')[:5] }}"
+      when: has_telnet
+
+    - name: Remove telnet and configure SSH only on VTY lines
+      cisco.ios.ios_config:
+        parents:
+          - line vty 0 4
+          - line vty 5 15
+        lines:
+          - transport input ssh
+        match: strict
+      register: remediation_result
+      when: has_telnet
+      notify: log_remediation
+
+    - name: Verify remediation was successful
+      cisco.ios.ios_command:
+        commands:
+          - show running-config | include line|transport input
+      register: verify_config
+      when: remediation_result is defined and remediation_result.changed
+
+    # - name: Display verification results
+    #   ansible.builtin.debug:
+    #     msg: "{{ inventory_hostname }} - Verification after remediation: {{ verify_config.stdout[0] }}"
+    #   when: verify_config is defined
+    - name: Display verification results
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} - Verification after remediation: {{ verify_config.stdout[0] }}"
+      when: verify_config is defined and verify_config.stdout is defined
+
+    - name: Always display final status
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ 'REMEDIATED' if (remediation_result is defined and remediation_result.changed) else 'ALREADY COMPLIANT' }}"
+
+  handlers:
+    - name: log_remediation
+      ansible.builtin.lineinfile:
+        path: /tmp/remediation_log.txt
+        line: "{{ now(utc=true, fmt='%Y-%m-%dT%H:%M:%SZ') }} - {{ inventory_hostname }} - Remediated VTY lines: removed telnet, configured SSH only"        
+        create: yes
+      delegate_to: localhost

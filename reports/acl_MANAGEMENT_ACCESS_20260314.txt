@@ -1,0 +1,12 @@
+!
+! ACL: MANAGEMENT_ACCESS
+! Description: Controls SSH access to all Cisco devices
+! Generated: 2026-03-14T19:01:06.554670
+!
+ip access-list extended MANAGEMENT_ACCESS
+  ! Allow management subnet SSH
+  10 permit tcp 10.50.0.0 0.0.255.255 any eq 22
+  ! Allow management subnet HTTPS
+  20 permit tcp 10.50.0.0 0.0.255.255 any eq 443
+  ! Implicit deny — log for visibility
+  100 deny ip any any log

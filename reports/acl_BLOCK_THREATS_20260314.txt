@@ -1,0 +1,12 @@
+!
+! ACL: BLOCK_THREATS
+! Description: Dynamic threat blocking list — populated by incident response
+! Generated: 2026-03-14T19:01:08.233933
+!
+ip access-list extended BLOCK_THREATS
+  ! Brute-force attacker — blocked 2024-03-15
+  10 deny ip host 185.220.101.47 any log
+  ! Known C2 server — blocked 2024-03-15
+  20 deny ip host 185.156.73.42 any log
+  ! Permit all — threat list is a blacklist, not whitelist
+  999 permit ip any any

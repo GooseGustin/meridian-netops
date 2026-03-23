@@ -1,0 +1,14 @@
+# inventory/hosts.yaml
+all:
+  children:
+    routers:
+      hosts:
+        R1:
+          ansible_host: 192.168.100.10
+          ospf_router_id: 1.1.1.1
+        R2:
+          ansible_host: 192.168.100.11
+          ospf_router_id: 2.2.2.2
+        R3:
+          ansible_host: 192.168.100.12
+          ospf_router_id: 3.3.3.3

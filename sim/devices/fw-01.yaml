@@ -83,6 +83,7 @@ running_config: |
   !
   line vty 0 4
    login local
-   transport input ssh
+  #  transport input ssh
+   transport input telnet
   !
   end

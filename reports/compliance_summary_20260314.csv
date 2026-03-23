@@ -1,0 +1,6 @@
+Device,Type,Status,Security Drift Count,Policy Violations,Missing Requirements,Compliant
+edge-router-01,Cisco IOS,DRIFT_DETECTED,2,0,1,NO
+fw-01,Cisco IOS,DRIFT_DETECTED,5,1,2,NO
+core-sw-01,Cisco IOS,no_baseline,0,0,0,NO
+web-01,Linux,REVIEWED,0,2,0,NO
+db-01,Linux,REVIEWED,0,2,0,NO

@@ -200,16 +200,21 @@ class CiscoShell(threading.Thread):
                     data = self.channel.recv(1024).decode("utf-8", errors="ignore")
                     for char in data:
                         if char in ("\r", "\n"):
+                            # Echo the command before processing
+                            if buf.strip():  # Only echo non-empty commands
+                                # Echo the command exactly as received
+                                echo = f"\r\n{buf}"
+                                self.channel.send(echo.encode())
+                            
+                            # Process command and get response
                             response = self.handle(buf)
-                            echo = f"{buf}\r\n"
+                            
+                            # Send response and new prompt
                             if response:
-                                self.channel.send(
-                                    f"\r\n{response}\r\n{self.prompt} ".encode()
-                                )
-                            else:
-                                self.channel.send(
-                                    f"\r\n{self.prompt} ".encode()
-                                )
+                                self.channel.send(f"\r\n{response}".encode())
+                            
+                            # Always send new prompt
+                            self.channel.send(f"\r\n{self.prompt} ".encode())
                             buf = ""
                         else:
                             buf += char

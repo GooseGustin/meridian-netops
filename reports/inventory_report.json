@@ -4,46 +4,112 @@
     "role": "edge-router",
     "site": "lagos-dc",
     "device_type": "cisco_ios",
-    "timestamp": "2026-03-11T13:05:44.788589",
-    "status": "error",
-    "facts": {},
-    "error": "\n\nPattern not detected: 'terminal\\\\ length\\\\ 0' in output.\n\nThings you might try to fix this:\n1. Adjust the regex pattern to better identify the terminating string. Note, in\nmany situations the pattern is automatically based on the network device's prompt.\n2. Increase the read_timeout to a larger value.\n\nYou can also look at the Netmiko session_log or debug log for more information.\n\n"
+    "timestamp": "2026-03-14T19:13:06.418969",
+    "status": "success",
+    "facts": {
+      "os_version": "15.2(4)M7",
+      "uptime": "47 days, 3 hours, 12 minutes",
+      "cpu_5sec": 12,
+      "interfaces": [
+        {
+          "interface": "GigabitEthernet0/0",
+          "ip": "10.0.0.1",
+          "status": "up",
+          "protocol": "up"
+        },
+        {
+          "interface": "GigabitEthernet0/1",
+          "ip": "10.0.1.1",
+          "status": "up",
+          "protocol": "up"
+        },
+        {
+          "interface": "GigabitEthernet0/2",
+          "ip": "unassigned",
+          "status": "administratively",
+          "protocol": "down"
+        }
+      ]
+    },
+    "error": null
   },
   {
     "hostname": "fw-01",
     "role": "firewall",
     "site": "lagos-dc",
     "device_type": "cisco_ios",
-    "timestamp": "2026-03-11T13:06:04.970374",
-    "status": "error",
-    "facts": {},
-    "error": "\n\nPattern not detected: 'terminal\\\\ length\\\\ 0' in output.\n\nThings you might try to fix this:\n1. Adjust the regex pattern to better identify the terminating string. Note, in\nmany situations the pattern is automatically based on the network device's prompt.\n2. Increase the read_timeout to a larger value.\n\nYou can also look at the Netmiko session_log or debug log for more information.\n\n"
+    "timestamp": "2026-03-14T19:13:10.944511",
+    "status": "success",
+    "facts": {
+      "os_version": "15.2(4)M7",
+      "uptime": "47 days, 3 hours, 9 minutes",
+      "cpu_5sec": 5,
+      "interfaces": [
+        {
+          "interface": "GigabitEthernet0/0",
+          "ip": "10.0.1.2",
+          "status": "up",
+          "protocol": "up"
+        },
+        {
+          "interface": "GigabitEthernet0/1",
+          "ip": "10.0.2.1",
+          "status": "up",
+          "protocol": "up"
+        }
+      ]
+    },
+    "error": null
   },
   {
     "hostname": "core-sw-01",
     "role": "core-switch",
     "site": "lagos-dc",
     "device_type": "cisco_ios",
-    "timestamp": "2026-03-11T13:06:25.164102",
-    "status": "error",
-    "facts": {},
-    "error": "\n\nPattern not detected: 'terminal\\\\ length\\\\ 0' in output.\n\nThings you might try to fix this:\n1. Adjust the regex pattern to better identify the terminating string. Note, in\nmany situations the pattern is automatically based on the network device's prompt.\n2. Increase the read_timeout to a larger value.\n\nYou can also look at the Netmiko session_log or debug log for more information.\n\n"
+    "timestamp": "2026-03-14T19:13:17.084321",
+    "status": "success",
+    "facts": {
+      "os_version": "15.2(4)M7",
+      "uptime": "47 days, 2 hours, 58 minutes",
+      "cpu_5sec": 3,
+      "interfaces": [
+        {
+          "interface": "GigabitEthernet0/1",
+          "ip": "10.0.2.2",
+          "status": "up",
+          "protocol": "up"
+        },
+        {
+          "interface": "GigabitEthernet0/2",
+          "ip": "10.0.10.1",
+          "status": "up",
+          "protocol": "up"
+        },
+        {
+          "interface": "GigabitEthernet0/3",
+          "ip": "10.0.20.1",
+          "status": "up",
+          "protocol": "up"
+        }
+      ]
+    },
+    "error": null
   },
   {
     "hostname": "web-01",
     "role": "web-server",
     "site": "lagos-dc",
     "device_type": "linux",
-    "timestamp": "2026-03-11T13:06:45.370020",
+    "timestamp": "2026-03-14T19:13:21.378199",
     "status": "success",
     "facts": {
-      "kernel": "Linux a9d349e78ede 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux",
-      "uptime": "up 1 hour, 38 minutes",
+      "kernel": "Linux web-01 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux",
+      "uptime": "up 1 day, 1 hour, 35 minutes",
       "disk_used": "15G",
       "disk_avail": "941G",
       "disk_use_pct": "2%",
       "mem_total_mb": "3798",
-      "mem_used_mb": "891"
+      "mem_used_mb": "1004"
     },
     "error": null
   },
@@ -52,16 +118,16 @@
     "role": "db-server",
     "site": "lagos-dc",
     "device_type": "linux",
-    "timestamp": "2026-03-11T13:07:00.489922",
+    "timestamp": "2026-03-14T19:13:46.977322",
     "status": "success",
     "facts": {
-      "kernel": "Linux f0b52d168610 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux",
-      "uptime": "up 1 hour, 39 minutes",
+      "kernel": "Linux db-01 6.6.87.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025 x86_64 x86_64 x86_64 GNU/Linux",
+      "uptime": "up 1 day, 1 hour, 36 minutes",
       "disk_used": "15G",
       "disk_avail": "941G",
       "disk_use_pct": "2%",
       "mem_total_mb": "3798",
-      "mem_used_mb": "889"
+      "mem_used_mb": "1010"
     },
     "error": null
   }
