@@ -1,0 +1,25 @@
+# playbooks/remediate.yaml
+---
+- name: Meridian Security Remediation
+  hosts: routers
+  gather_facts: false
+  tags: safe_remediation
+
+  tasks:
+    - name: Gather running config
+      cisco.ios.ios_command:
+        commands: show running-config
+      register: running_config
+
+    - name: Enable password encryption if missing
+      cisco.ios.ios_config:
+        lines:
+          - service password-encryption
+      when: "'service password-encryption' not in running_config.stdout[0]"
+
+    - name: Remove Telnet from VTY if present
+      cisco.ios.ios_config:
+        lines:
+          - transport input ssh
+        parents: line vty 0 4
+      when: "'transport input telnet' in running_config.stdout[0]"

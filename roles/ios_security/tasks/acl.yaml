@@ -1,0 +1,56 @@
+---
+- name: Configure ACLs from policy data
+  cisco.ios.ios_config:
+    lines: "{{ item.sequence }} {{ item.action }} {{ item.source | default('') }} {{ item.destination | default('') }} {{ 'log' if item.log | default(false) else '' }}"
+    parents: "ip access-list {{ acl.type }} {{ acl.name }}"
+  loop: "{{ item.rules }}"
+  loop_control:
+    loop_var: item
+  with_items: "{{ acl_policy }}"
+  loop_control:
+    loop_var: acl
+
+- name: Apply MGMT-ACCESS to VTY lines
+  cisco.ios.ios_config:
+    lines:
+      - access-class MGMT-ACCESS in
+    parents: line vty 0 4
+
+- name: Block attacker R5 SSH traffic
+  cisco.ios.ios_config:
+    lines:
+      - 5 deny tcp host 10.0.34.5 any eq 22 log
+    parents: ip access-list extended INBOUND-POLICY
+
+- name: Block Operations to Finance MySQL
+  cisco.ios.ios_config:
+    lines:
+      - 10 deny tcp 10.2.0.0 0.0.0.255 10.1.0.0 0.0.0.255 eq 3306 log
+      - 20 permit ip 10.2.0.0 0.0.0.255 any
+    parents: ip access-list extended 102
+
+- name: Apply Operations ACL to VLAN 20 subinterface
+  cisco.ios.ios_config:
+    lines:
+      - ip access-group 102 in
+    parents: interface FastEthernet1/0.20
+    
+# ---
+# - name: Configure management ACL
+#   cisco.ios.ios_config:
+#     lines:
+#       - 10 permit 192.168.100.0 0.0.0.255
+#       - 20 deny any log
+#     parents: ip access-list standard MGMT-ACCESS
+
+# - name: Apply management ACL to VTY lines
+#   cisco.ios.ios_config:
+#     lines:
+#       - access-class MGMT-ACCESS in
+#     parents: line vty 0 4
+    
+# - name: Block rogue host 10.1.0.50 from Operations VLAN
+#   cisco.ios.ios_config:
+#     lines:
+#       - 5 deny ip host 10.1.0.50 10.2.0.0 0.0.0.255 log
+#     parents: ip access-list extended 101

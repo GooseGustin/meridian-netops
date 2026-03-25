@@ -1,0 +1,57 @@
+# playbooks/compliance_check.yaml
+---
+- name: Meridian Security Compliance Check
+  hosts: routers
+  gather_facts: false
+
+  vars:
+    report_dir: /tmp/meridian-compliance
+    report_file: "{{ report_dir }}/{{ inventory_hostname }}_{{ now(utc=true, fmt='%Y-%m-%d') }}.txt"
+
+  tasks:
+    - name: Create report directory
+      file:
+        path: "{{ report_dir }}"
+        state: directory
+      delegate_to: localhost
+      run_once: true
+
+    - name: Gather running config
+      cisco.ios.ios_command:
+        commands: show running-config
+      register: running_config
+
+    - name: Check password encryption
+      assert:
+        that: "'service password-encryption' in running_config.stdout[0]"
+        fail_msg: "FAIL: service password-encryption missing on {{ inventory_hostname }}"
+        success_msg: "PASS: password encryption enabled"
+
+    - name: Check AAA new-model
+      assert:
+        that: "'aaa new-model' in running_config.stdout[0]"
+        fail_msg: "FAIL: aaa new-model not configured on {{ inventory_hostname }}"
+        success_msg: "PASS: AAA enabled"
+
+    - name: Check no Telnet on VTY
+      assert:
+        that: "'transport input telnet' not in running_config.stdout[0]"
+        fail_msg: "FAIL: Telnet is enabled on VTY lines on {{ inventory_hostname }}"
+        success_msg: "PASS: Telnet not permitted"
+
+    - name: Check SSH version 2
+      assert:
+        that: "'ip ssh version 2' in running_config.stdout[0]"
+        fail_msg: "FAIL: SSH version 2 not configured on {{ inventory_hostname }}"
+        success_msg: "PASS: SSH v2 configured"
+
+    - name: Write compliance report
+      copy:
+        content: |
+          Meridian Compliance Report
+          Host: {{ inventory_hostname }}
+          Date: {{ now(utc=true, fmt='%Y-%m-%dT%H:%M:%SZ') }}
+          ---
+          Results written to Ansible output above.
+        dest: "{{ report_file }}"
+      delegate_to: localhost

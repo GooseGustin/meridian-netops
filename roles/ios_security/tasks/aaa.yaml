@@ -1,0 +1,38 @@
+---
+- name: Ensure local users exist before AAA
+  cisco.ios.ios_config:
+    lines:
+      - username admin privilege 15 secret cisco
+      - username netops privilege 7 secret netops123
+      - username readonly privilege 1 secret readonly123
+
+- name: Enable AAA
+  cisco.ios.ios_config:
+    lines:
+      - aaa new-model
+      - aaa authentication login default local
+      - aaa authentication enable default enable
+      - aaa authorization exec default local
+
+- name: Configure login rate limiting
+  cisco.ios.ios_config:
+    lines:
+      - login block-for 60 attempts 3 within 30
+
+- name: Configure privilege level 7 commands
+  cisco.ios.ios_config:
+    lines:
+      - privilege exec level 7 show running-config
+      - privilege exec level 7 show ip access-lists
+      - privilege exec level 7 ping
+      - privilege exec level 7 traceroute
+
+- name: Create NOC user
+  cisco.ios.ios_config:
+    lines:
+      - 'username noc privilege 10 secret {{ vault_noc_password }}'
+
+- name: Restrict show running-config to priv 15
+  cisco.ios.ios_config:
+    lines:
+      - no privilege exec level 10 show running-config

@@ -1,14 +1,32 @@
-# inventory/hosts.yaml
+---
+_ios_common: &ios_common
+  ansible_user: admin
+  ansible_password: "{{ vault_admin_password }}"
+  ansible_connection: network_cli
+  ansible_network_os: ios
+  ansible_ssh_common_args: >-
+    -o KexAlgorithms=+diffie-hellman-group14-sha1
+    -o HostKeyAlgorithms=+ssh-rsa
+    -o Ciphers=+aes256-cbc
+    -o MACs=+hmac-sha1
+
 all:
   children:
     routers:
       hosts:
         R1:
+          <<: *ios_common
           ansible_host: 192.168.100.10
           ospf_router_id: 1.1.1.1
         R2:
+          <<: *ios_common
           ansible_host: 192.168.100.11
           ospf_router_id: 2.2.2.2
         R3:
+          <<: *ios_common
           ansible_host: 192.168.100.12
           ospf_router_id: 3.3.3.3
+        R4:
+          <<: *ios_common
+          ansible_host: 192.168.100.13
+          ospf_router_id: 4.4.4.4

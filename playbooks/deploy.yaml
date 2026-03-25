@@ -1,40 +1,9 @@
 # playbooks/deploy.yaml
 ---
-- name: Meridian - Base Configuration
+- name: Meridian - Full Deployment
   hosts: routers
   gather_facts: false
-
-  tasks:
-    - name: Set hostname and domain
-      cisco.ios.ios_system:
-        hostname: "{{ inventory_hostname }}"
-        domain_name: meridian.local
-
-    - name: Configure management interface
-      cisco.ios.ios_interfaces:
-        config:
-          - name: FastEthernet0/0
-            description: "Management - SW-MGMT"
-            enabled: true
-
-    - name: Harden VTY lines
-      cisco.ios.ios_config:
-        lines:
-          - login local
-          - transport input ssh
-          - exec-timeout 10 0
-        parents: line vty 0 4
-
-    - name: Enable password encryption
-      cisco.ios.ios_config:
-        lines:
-          - service password-encryption
-
-    - name: Configure OSPF
-      cisco.ios.ios_config:
-        lines:
-          - 'router-id {{ ospf_router_id }}'
-          - passive-interface FastEthernet0/0
-          - network 10.0.0.0 0.255.255.255 area 0
-          - network 10.255.255.0 0.0.0.255 area 0
-        parents: router ospf 1
+  roles:
+    - ios_base
+    - ios_routing
+    - ios_security
