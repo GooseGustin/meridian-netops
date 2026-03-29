@@ -1,0 +1,11 @@
+---
+- name: Configure eBGP
+  cisco.ios.ios_config:
+    lines:
+      - 'bgp router-id {{ bgp_router_id }}'
+      - bgp log-neighbor-changes
+      - 'neighbor {{ bgp_peer_ip }} remote-as {{ bgp_peer_as }}'
+      - 'neighbor {{ bgp_peer_ip }} description {{ bgp_peer_description }}'
+      - 'network {{ bgp_network }} mask {{ bgp_mask }}'
+    parents: 'router bgp {{ bgp_local_as }}'
+  when: bgp_local_as is defined

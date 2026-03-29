@@ -1,0 +1,73 @@
+devices:
+  R1:
+    os: iosxe
+    connections:
+      cli:
+        protocol: ssh
+        ip: 192.168.100.10
+        port: 22
+        arguments:
+          ssh_options: >-
+            -o KexAlgorithms=+diffie-hellman-group14-sha1
+            -o HostKeyAlgorithms=+ssh-rsa
+            -o Ciphers=+aes256-cbc
+            -o MACs=+hmac-sha1
+            -o StrictHostKeyChecking=no
+    credentials:
+      default:
+        username: admin
+        password: cisco
+  R2:
+    os: iosxe
+    connections:
+      cli:
+        protocol: ssh
+        ip: 192.168.100.11
+        port: 22
+        arguments:
+          ssh_options: >-
+            -o KexAlgorithms=+diffie-hellman-group14-sha1
+            -o HostKeyAlgorithms=+ssh-rsa
+            -o Ciphers=+aes256-cbc
+            -o MACs=+hmac-sha1
+            -o StrictHostKeyChecking=no
+    credentials:
+      default:
+        username: admin
+        password: cisco
+  R3:
+    os: iosxe
+    connections:
+      cli:
+        protocol: ssh
+        ip: 192.168.100.12
+        port: 22
+        arguments:
+          ssh_options: >-
+            -o KexAlgorithms=+diffie-hellman-group14-sha1
+            -o HostKeyAlgorithms=+ssh-rsa
+            -o Ciphers=+aes256-cbc
+            -o MACs=+hmac-sha1
+            -o StrictHostKeyChecking=no
+    credentials:
+      default:
+        username: admin
+        password: cisco
+  R4:
+    os: iosxe
+    connections:
+      cli:
+        protocol: ssh
+        ip: 192.168.100.13
+        port: 22
+        arguments:
+          ssh_options: >-
+            -o KexAlgorithms=+diffie-hellman-group14-sha1
+            -o HostKeyAlgorithms=+ssh-rsa
+            -o Ciphers=+aes256-cbc
+            -o MACs=+hmac-sha1
+            -o StrictHostKeyChecking=no
+    credentials:
+      default:
+        username: admin
+        password: cisco

@@ -30,3 +30,25 @@ all:
           <<: *ios_common
           ansible_host: 192.168.100.13
           ospf_router_id: 4.4.4.4
+          bgp_local_as: 65001
+          bgp_router_id: 4.4.4.4
+          bgp_peer_ip: 203.0.113.2
+          bgp_peer_as: 65000
+          bgp_peer_description: ISP-R7
+          bgp_network: 10.0.0.0
+          bgp_mask: 255.255.0.0
+    branch:
+      hosts:
+        R5:
+          <<: *ios_common
+          ansible_host: 192.168.100.16
+          ospf_router_id: 5.5.5.5
+        R6:
+          <<: *ios_common
+          ansible_host: 192.168.100.15
+          ospf_router_id: 6.6.6.6
+    isp:
+      hosts:
+        R7:
+          <<: *ios_common
+          ansible_host: 192.168.100.14
