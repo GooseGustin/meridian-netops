@@ -1,6 +1,7 @@
 # tests/test_meridian.py
 from pyats import aetest
 from genie.testbed import load
+from genie.metaparser.util.exceptions import SchemaEmptyParserError
 import logging
 import time
 import json 
@@ -116,23 +117,27 @@ class BGPStabilityTests(aetest.Testcase):
     def test_bgp_route_stability(self, testbed):
         r4 = testbed.devices["R4"]
 
-        # Snapshot 1
-        parsed1 = r4.parse("show ip bgp")
-        print(json.dumps(parsed1, indent=2))
+        try:
+            parsed1 = r4.parse("show ip bgp")
+        except SchemaEmptyParserError:
+            self.failed("BGP table is empty on R4 — session may be down")
+            return
+
         snapshot1 = self._extract_routes(parsed1)
         logger.info(f"Snapshot 1: {len(snapshot1)} BGP prefixes")
 
         time.sleep(30)
 
-        # Snapshot 2
-        parsed2 = r4.parse("show ip bgp")
-        print(json.dumps(parsed2, indent=2))
+        try:
+            parsed2 = r4.parse("show ip bgp")
+        except SchemaEmptyParserError:
+            self.failed("BGP table empty on second snapshot — session dropped during test")
+            return
+
         snapshot2 = self._extract_routes(parsed2)
         logger.info(f"Snapshot 2: {len(snapshot2)} BGP prefixes")
 
-        # Compare
         failures = []
-
         for prefix, next_hop in snapshot1.items():
             if prefix not in snapshot2:
                 failures.append(f"Prefix {prefix} disappeared between snapshots")
@@ -142,6 +147,36 @@ class BGPStabilityTests(aetest.Testcase):
                 )
 
         assert not failures, "BGP route instability detected:\n" + "\n".join(failures)
+    # @aetest.test
+    # def test_bgp_route_stability(self, testbed):
+    #     r4 = testbed.devices["R4"]
+
+    #     # Snapshot 1
+    #     parsed1 = r4.parse("show ip bgp")
+    #     print(json.dumps(parsed1, indent=2))
+    #     snapshot1 = self._extract_routes(parsed1)
+    #     logger.info(f"Snapshot 1: {len(snapshot1)} BGP prefixes")
+
+    #     time.sleep(30)
+
+    #     # Snapshot 2
+    #     parsed2 = r4.parse("show ip bgp")
+    #     print(json.dumps(parsed2, indent=2))
+    #     snapshot2 = self._extract_routes(parsed2)
+    #     logger.info(f"Snapshot 2: {len(snapshot2)} BGP prefixes")
+
+    #     # Compare
+    #     failures = []
+
+    #     for prefix, next_hop in snapshot1.items():
+    #         if prefix not in snapshot2:
+    #             failures.append(f"Prefix {prefix} disappeared between snapshots")
+    #         elif snapshot2[prefix] != next_hop:
+    #             failures.append(
+    #                 f"Prefix {prefix} next-hop changed: {next_hop} → {snapshot2[prefix]}"
+    #             )
+
+    #     assert not failures, "BGP route instability detected:\n" + "\n".join(failures)
 
     def _extract_routes(self, parsed):
         """
