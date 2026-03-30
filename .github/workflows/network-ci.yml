@@ -34,7 +34,7 @@ jobs:
       - name: Install tools
         run: |
           pip install --quiet yamllint ansible ansible-lint
-          ansible-galaxy collection install cisco.ios --quiet
+          ansible-galaxy collection install cisco.ios -q
 
       - name: Lint YAML
         run: yamllint -c .yamllint.yaml inventory/ roles/ playbooks/
