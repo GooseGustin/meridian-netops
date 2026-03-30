@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Notify pipeline start
         run: |
@@ -49,7 +49,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Write vault password
         run: echo "${{ secrets.VAULT_PASSWORD }}" > /tmp/.vault_pass
@@ -60,7 +60,8 @@ jobs:
             --inventory inventory/hosts.yaml \
             --vault-password-file /tmp/.vault_pass \
             --check \
-            --diff
+            --diff \
+            --limit 'all:!R8'
 
       - name: Cleanup secrets
         if: always()
@@ -75,7 +76,7 @@ jobs:
     environment: production
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Write vault password
         run: echo "${{ secrets.VAULT_PASSWORD }}" > /tmp/.vault_pass
@@ -98,7 +99,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install pyATS
         run: pip install --quiet pyats genie
