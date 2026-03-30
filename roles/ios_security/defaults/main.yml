@@ -1,5 +1,5 @@
 ---
-acl_policy:
+ios_security_acl_policy:
   - name: MGMT-ACCESS
     type: standard
     rules:
