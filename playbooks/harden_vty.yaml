@@ -49,17 +49,28 @@
     #   when: verify_config is defined
     - name: Display verification results
       ansible.builtin.debug:
-        msg: "{{ inventory_hostname }} - Verification after remediation: {{ verify_config.stdout[0] }}"
+        msg: >
+          {{ inventory_hostname }} -
+          Verification after remediation:
+          {{ verify_config.stdout[0] }}
       when: verify_config is defined and verify_config.stdout is defined
 
     - name: Always display final status
       ansible.builtin.debug:
-        msg: "{{ inventory_hostname }}: {{ 'REMEDIATED' if (remediation_result is defined and remediation_result.changed) else 'ALREADY COMPLIANT' }}"
+        msg: >
+          {{ inventory_hostname }}:
+          {{ 'REMEDIATED'
+            if (remediation_result is defined and remediation_result.changed)
+            else 'ALREADY COMPLIANT' }}
 
   handlers:
     - name: log_remediation
       ansible.builtin.lineinfile:
         path: /tmp/remediation_log.txt
-        line: "{{ now(utc=true, fmt='%Y-%m-%dT%H:%M:%SZ') }} - {{ inventory_hostname }} - Remediated VTY lines: removed telnet, configured SSH only"        
+        line: >
+          {{ now(utc=true, fmt='%Y-%m-%dT%H:%M:%SZ') }} -
+          {{ inventory_hostname }} -
+          Remediated VTY lines:
+          removed telnet, configured SSH only
         create: yes
       delegate_to: localhost

@@ -1,3 +1,4 @@
+---
 # inventory/group_vars/routers/ios.yaml
 ansible_user: admin
 ansible_password: "{{ vault_admin_password }}"
