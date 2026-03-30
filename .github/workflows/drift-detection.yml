@@ -1,0 +1,82 @@
+# .github/workflows/drift-detection.yml
+name: Drift Detection
+
+on:
+  schedule:
+    - cron: '0 * * * *'   # Every hour
+  workflow_dispatch:        # Allow manual trigger
+
+jobs:
+  detect:
+    name: Detect Config Drift
+    runs-on: self-hosted
+    outputs:
+      drift_detected: ${{ steps.check.outputs.drift_detected }}
+      drift_hosts: ${{ steps.check.outputs.drift_hosts }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Write vault password
+        run: echo "${{ secrets.VAULT_PASSWORD }}" > /tmp/.vault_pass
+
+      - name: Run drift check
+        id: check
+        run: |
+          set +e
+          ansible-playbook playbooks/deploy.yaml \
+            --inventory inventory/hosts.yaml \
+            --vault-password-file /tmp/.vault_pass \
+            --check \
+            --diff 2>&1 | tee /tmp/drift_output.txt
+
+          if grep -q "changed=[1-9]" /tmp/drift_output.txt; then
+            echo "drift_detected=true" >> $GITHUB_OUTPUT
+            # Extract hostnames that showed changes
+            HOSTS=$(grep "changed=[1-9]" /tmp/drift_output.txt | \
+                    grep -oP "(?<=: )\S+(?=\s)" | paste -sd,)
+            echo "drift_hosts=${HOSTS}" >> $GITHUB_OUTPUT
+          else
+            echo "drift_detected=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Cleanup secrets
+        if: always()
+        run: rm -f /tmp/.vault_pass
+
+  remediate:
+    name: Auto-Remediate
+    runs-on: self-hosted
+    needs: detect
+    if: needs.detect.outputs.drift_detected == 'true'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Write vault password
+        run: echo "${{ secrets.VAULT_PASSWORD }}" > /tmp/.vault_pass
+
+      - name: Run safe remediation
+        run: |
+          ansible-playbook playbooks/remediate.yaml \
+            --inventory inventory/hosts.yaml \
+            --vault-password-file /tmp/.vault_pass \
+            --tags safe_remediation
+
+      - name: Alert on drift
+        run: |
+          curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+            -H "Content-type: application/json" \
+            -d "{
+              \"text\": \"⚠️ Config drift detected and remediated on Meridian network.\",
+              \"attachments\": [{
+                \"color\": \"warning\",
+                \"text\": \"Affected hosts: ${{ needs.detect.outputs.drift_hosts }}\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+              }]
+            }"
+
+      - name: Cleanup secrets
+        if: always()
+        run: rm -f /tmp/.vault_pass

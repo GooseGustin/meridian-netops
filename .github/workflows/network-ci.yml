@@ -1,80 +1,129 @@
 # .github/workflows/network-ci.yml
-# Meridian Network Automation — CI Pipeline
-# Runs on every push and pull request to main.
-# Mirrors ci_validate.sh but runs automatically on every push.
-
-name: Network Automation CI
+name: Meridian Network CI/CD
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - 'feature/**'
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
-  validate:
-    name: Validate Automation Code
-    runs-on: ubuntu-latest
-
+  lint:
+    name: Lint
+    runs-on: self-hosted
+    timeout-minutes: 10
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Syntax check — Python files
+      - name: Notify pipeline start
         run: |
-          for f in scripts/*.py sim/*.py; do
-            echo "Checking: $f"
-            python -m py_compile "$f"
-          done
+          curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+            -H "Content-type: application/json" \
+            -d "{
+              \"text\": \"🚀 Pipeline started by ${{ github.actor }} on \`${{ github.ref_name }}\`\",
+              \"attachments\": [{
+                \"color\": \"#36a64f\",
+                \"text\": \"Run: ${{ github.run_url }}\"
+              }]
+            }"
 
-      - name: Validate YAML files
+      - name: Install tools
         run: |
-          python -c "
-          import yaml, glob
-          for path in glob.glob('baseline/*.yaml') + glob.glob('data/*.yaml') + ['inventory.yaml']:
-              try:
-                  yaml.safe_load(open(path))
-                  print(f'OK: {path}')
-              except Exception as e:
-                  print(f'FAIL: {path} -> {e}')
-                  exit(1)
-          "
+          pip install --quiet yamllint ansible ansible-lint
+          ansible-galaxy collection install cisco.ios --quiet
 
-      - name: Policy integrity check
-        run: |
-          python -c "
-          import yaml
-          with open('baseline/security_policy.yaml') as f:
-              p = yaml.safe_load(f)
-          assert 'required_config_lines' in p
-          assert 'forbidden_config_lines' in p
-          assert len(p['required_config_lines']) > 0
-          print('Policy integrity: OK')
-          "
+      - name: Lint YAML
+        run: yamllint -c .yamllint.yaml inventory/ roles/ playbooks/
 
-      - name: Secret hygiene check
-        run: |
-          python -c "
-          import re, glob, sys
-          issues = []
-          for path in glob.glob('scripts/*.py') + glob.glob('sim/*.py'):
-              content = open(path).read()
-              if re.search(r'password\s*=\s*[\"\\x27][^\"\\x27]{6,}', content, re.I):
-                  issues.append(path)
-          if issues:
-              print('Hardcoded credentials found:', issues)
-              sys.exit(1)
-          print('Secret hygiene: OK')
-          "
+      - name: Lint Ansible
+        run: ansible-lint playbooks/deploy.yaml
 
-      - name: Render Jinja2 templates
+  dry-run:
+    name: Dry Run
+    runs-on: self-hosted
+    needs: lint
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Write vault password
+        run: echo "${{ secrets.VAULT_PASSWORD }}" > /tmp/.vault_pass
+
+      - name: Ansible dry run
         run: |
-          python scripts/17_acl_generator.py || echo "ACL generator ran (no live devices in CI)"
+          ansible-playbook playbooks/deploy.yaml \
+            --inventory inventory/hosts.yaml \
+            --vault-password-file /tmp/.vault_pass \
+            --check \
+            --diff
+
+      - name: Cleanup secrets
+        if: always()
+        run: rm -f /tmp/.vault_pass
+
+  deploy:
+    name: Deploy
+    runs-on: self-hosted
+    needs: dry-run
+    timeout-minutes: 10
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Write vault password
+        run: echo "${{ secrets.VAULT_PASSWORD }}" > /tmp/.vault_pass
+
+      - name: Deploy to lab
+        run: |
+          ansible-playbook playbooks/deploy.yaml \
+            --inventory inventory/hosts.yaml \
+            --vault-password-file /tmp/.vault_pass \
+            --diff
+
+      - name: Cleanup secrets
+        if: always()
+        run: rm -f /tmp/.vault_pass
+
+  test:
+    name: Test
+    runs-on: self-hosted
+    needs: deploy
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pyATS
+        run: pip install --quiet pyats genie
+
+      - name: Run pyATS tests
+        run: |
+          python tests/test_meridian.py \
+            --testbed tests/testbed.yaml
+
+      - name: Notify pipeline result
+        if: always()
+        run: |
+          STATUS="${{ job.status }}"
+          COLOR="good"
+          EMOJI="✅"
+          if [ "$STATUS" != "success" ]; then
+            COLOR="danger"
+            EMOJI="❌"
+          fi
+          curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+            -H "Content-type: application/json" \
+            -d "{
+              \"text\": \"$EMOJI Pipeline $STATUS on \`${{ github.ref_name }}\` (by ${{ github.actor }})\",
+              \"attachments\": [{
+                \"color\": \"$COLOR\",
+                \"text\": \"Run: ${{ github.run_url }}\"
+              }]
+            }"
