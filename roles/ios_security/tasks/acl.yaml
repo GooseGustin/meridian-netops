@@ -2,14 +2,14 @@
 - name: Configure ACLs from policy data
   cisco.ios.ios_config:
     lines: >
-      {{ acl_rule.sequence }} {{ acl_rule.action }}
-      {{ acl_rule.source | default('') }}
-      {{ acl_rule.destination | default('') }}
-      {{ 'log' if acl_rule.log | default(false) else '' }}
-    parents: "ip access-list {{ acl.type }} {{ acl.name }}"
-  loop: "{{ ios_security_acl_policy }}"
+      {{ item.1.sequence }} {{ item.1.action }}
+      {{ item.1.source | default('') }}
+      {{ item.1.destination | default('') }}
+      {{ 'log' if item.1.log | default(false) else '' }}
+    parents: "ip access-list {{ item.0.type }} {{ item.0.name }}"
+  loop: "{{ ios_security_acl_policy | subelements('rules') }}"
   loop_control:
-    loop_var: acl
+    label: "{{ item.0.name }} rule {{ item.1.sequence }}"
 
 - name: Apply MGMT-ACCESS to VTY lines
   cisco.ios.ios_config:
