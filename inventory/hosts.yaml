@@ -37,6 +37,10 @@ all:
           bgp_peer_description: ISP-R7
           bgp_network: 10.0.0.0
           bgp_mask: 255.255.0.0
+        R8:
+          <<: *ios_common
+          ansible_host: 192.168.100.17
+          ospf_router_id: 8.8.8.8
     branch:
       hosts:
         R5:
