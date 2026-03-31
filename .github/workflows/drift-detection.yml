@@ -3,20 +3,23 @@ name: Drift Detection
 
 on:
   schedule:
-    - cron: '0 * * * *'   # Every hour
-  workflow_dispatch:        # Allow manual trigger
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   detect:
     name: Detect Config Drift
     runs-on: self-hosted
+    timeout-minutes: 10
     outputs:
       drift_detected: ${{ steps.check.outputs.drift_detected }}
       drift_hosts: ${{ steps.check.outputs.drift_hosts }}
+      has_unsafe: ${{ steps.check.outputs.has_unsafe }}
+      drift_summary: ${{ steps.parse.outputs.drift_summary }}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Write vault password
         run: echo "${{ secrets.VAULT_PASSWORD }}" > /tmp/.vault_pass
@@ -33,7 +36,6 @@ jobs:
 
           if grep -q "changed=[1-9]" /tmp/drift_output.txt; then
             echo "drift_detected=true" >> $GITHUB_OUTPUT
-            # Extract hostnames that showed changes
             HOSTS=$(grep "changed=[1-9]" /tmp/drift_output.txt | \
                     grep -oP "(?<=: )\S+(?=\s)" | paste -sd,)
             echo "drift_hosts=${HOSTS}" >> $GITHUB_OUTPUT
@@ -41,19 +43,42 @@ jobs:
             echo "drift_detected=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Parse drift details
+        id: parse
+        if: steps.check.outputs.drift_detected == 'true'
+        run: |
+          pip install --quiet -r requirements.txt 2>/dev/null || true
+          python scripts/parse_drift.py /tmp/drift_output.txt --json > /tmp/drift_parsed.json
+          # Check for unsafe drift
+          UNSAFE=$(python3 -c "
+          import json, sys
+          d = json.load(open('/tmp/drift_parsed.json'))
+          print('true' if any(v.get('unsafe') for v in d.values()) else 'false')
+          ")
+          echo "has_unsafe=${UNSAFE}" >> $GITHUB_OUTPUT
+          # Build Slack summary (escaped for JSON)
+          SUMMARY=$(python scripts/parse_drift.py /tmp/drift_output.txt | python3 -c "
+          import sys, json
+          print(json.dumps(sys.stdin.read()))
+          ")
+          echo "drift_summary=${SUMMARY}" >> $GITHUB_OUTPUT
+
       - name: Cleanup secrets
         if: always()
         run: rm -f /tmp/.vault_pass
 
   remediate:
-    name: Auto-Remediate
+    name: Auto-Remediate (safe drift only)
     runs-on: self-hosted
     needs: detect
-    if: needs.detect.outputs.drift_detected == 'true'
+    timeout-minutes: 10
+    if: |
+      needs.detect.outputs.drift_detected == 'true' &&
+      needs.detect.outputs.has_unsafe != 'true'
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Write vault password
         run: echo "${{ secrets.VAULT_PASSWORD }}" > /tmp/.vault_pass
@@ -65,18 +90,40 @@ jobs:
             --vault-password-file /tmp/.vault_pass \
             --tags safe_remediation
 
-      - name: Alert on drift
+      - name: Notify — safe drift remediated
         run: |
           curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
             -H "Content-type: application/json" \
             -d "{
-              \"text\": \"⚠️ Config drift detected and remediated on Meridian network.\",
+              \"text\": \"✅ Config drift detected and auto-remediated.\",
               \"attachments\": [{
                 \"color\": \"warning\",
-                \"text\": \"Affected hosts: ${{ needs.detect.outputs.drift_hosts }}\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+                \"text\": \"Hosts: ${{ needs.detect.outputs.drift_hosts }}\nDetails:\n${{ needs.detect.outputs.drift_summary }}\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
               }]
             }"
 
       - name: Cleanup secrets
         if: always()
         run: rm -f /tmp/.vault_pass
+
+  alert-unsafe:
+    name: Alert — Unsafe Drift (human required)
+    runs-on: self-hosted
+    needs: detect
+    timeout-minutes: 5
+    if: |
+      needs.detect.outputs.drift_detected == 'true' &&
+      needs.detect.outputs.has_unsafe == 'true'
+
+    steps:
+      - name: Notify — unsafe drift detected
+        run: |
+          curl -s -X POST "${{ secrets.SLACK_WEBHOOK_URL }}" \
+            -H "Content-type: application/json" \
+            -d "{
+              \"text\": \"🚨 UNSAFE drift detected — human review required. Auto-remediation blocked.\",
+              \"attachments\": [{
+                \"color\": \"danger\",
+                \"text\": \"Hosts: ${{ needs.detect.outputs.drift_hosts }}\nDetails:\n${{ needs.detect.outputs.drift_summary }}\nRun: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+              }]
+            }"

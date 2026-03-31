@@ -9,4 +9,5 @@
     parents: router ospf 1
   when: ospf_router_id is defined
 
-- import_tasks: bgp.yaml
+- name: Import BGP tasks
+  ansible.builtin.import_tasks: bgp.yaml
