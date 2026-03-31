@@ -60,8 +60,7 @@ jobs:
             --inventory inventory/hosts.yaml \
             --vault-password-file /tmp/.vault_pass \
             --check \
-            --diff \
-            --limit 'all:!R8'
+            --diff
 
       - name: Cleanup secrets
         if: always()
